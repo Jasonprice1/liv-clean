@@ -1,145 +1,107 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from 'react';
 
 export default function ChatMockup() {
   const [messages, setMessages] = useState([
-    { sender: "ai", text: "hey u good?" },
-    { sender: "user", text: "Not much, just pretending to text someone lol" },
-    { sender: "ai", text: "lol stop 😭 ur so dramatic" }
+    { sender: 'ai', text: 'hey u good?' },
+    { sender: 'user', text: 'Not much, just pretending to text someone lol' },
+    { sender: 'ai', text: 'lol stop 😭 ur so dramatic' }
   ]);
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const scrollRef = useRef(null);
+
+  // Scroll to bottom when messages update
+  useEffect(() => {
+    scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
   const handleSend = () => {
-    if (input.trim() === "") return;
-    setMessages([...messages, { sender: "user", text: input }]);
-    setInput("");
+    const trimmed = input.trim();
+    if (!trimmed) return;
+
+    const nextResponse = "no like fr, tell me what’s goin on";
+
+    setMessages(prev => [...prev, { sender: 'user', text: trimmed }]);
+    setInput('');
     setIsTyping(true);
+
     setTimeout(() => {
-      setMessages(prev => [
-        ...prev,
-        { sender: "ai", text: "no like fr, tell me what’s goin on" }
-      ]);
+      setMessages(prev => [...prev, { sender: 'ai', text: nextResponse }]);
       setIsTyping(false);
-    }, 1000);
+    }, 11000); // ⏱️ 11 seconds
   };
 
   return (
     <div style={{
-      maxWidth: 390,
+      maxWidth: 400,
       margin: '2rem auto',
-      borderRadius: 50,
-      overflow: 'hidden',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-      backgroundColor: '#fff',
-      height: 844,
+      borderRadius: 24,
+      boxShadow: '0 0 20px rgba(0,0,0,0.15)',
+      fontFamily: 'Arial, sans-serif',
+      background: '#fff',
+      height: 700,
       display: 'flex',
       flexDirection: 'column',
-      boxShadow: '0 0 40px rgba(0,0,0,0.3)',
-      border: '1px solid #ccc',
-      position: 'relative',
+      overflow: 'hidden',
+      border: '1px solid #ddd'
     }}>
-      {/* Status Bar */}
       <div style={{
-        height: 44,
-        backgroundColor: '#fff',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '0 12px',
-        fontSize: 12,
-        color: '#111',
+        padding: '1rem',
         borderBottom: '1px solid #eee',
-        fontWeight: 500
-      }}>
-        <span style={{ fontSize: 16 }}>9:41</span>
-        <div style={{ display: 'flex', gap: 6 }}>
-          <span>📶</span>
-          <span>🔋</span>
-        </div>
-      </div>
-
-      {/* Header */}
-      <div style={{
-        backgroundColor: '#fff',
-        color: '#000',
-        padding: '0.75rem 1rem',
-        fontWeight: 600,
-        fontSize: '1rem',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between',
-        borderBottom: '1px solid #eee'
+        gap: '0.75rem'
       }}>
-        <span style={{ fontSize: '1.2rem' }}>←</span>
-        <div style={{ textAlign: 'center', flexGrow: 1, marginLeft: '-1.2rem' }}>
-          <div>Liv</div>
-          <div style={{ fontSize: '0.7rem', color: '#888', fontWeight: 400 }}>Online now</div>
+        <img src="https://i.pravatar.cc/100?img=47" alt="Liv" style={{ width: 36, height: 36, borderRadius: '50%' }} />
+        <div>
+          <div style={{ fontWeight: 'bold', fontSize: '1rem' }}>Liv</div>
+          <div style={{ fontSize: '0.75rem', color: '#888' }}>Typing...</div>
         </div>
-        <span style={{ width: '1.2rem' }}></span>
       </div>
 
-      {/* Messages */}
       <div style={{
         padding: '1rem',
         flex: 1,
         overflowY: 'auto',
+        background: '#f7f7f9',
         display: 'flex',
         flexDirection: 'column',
-        gap: '0.5rem',
-        backgroundColor: '#f2f2f7'
+        gap: '0.5rem'
       }}>
         {messages.map((msg, idx) => (
           <div key={idx} style={{
             alignSelf: msg.sender === 'user' ? 'flex-end' : 'flex-start',
             backgroundColor: msg.sender === 'user' ? '#007aff' : '#e5e5ea',
             color: msg.sender === 'user' ? '#fff' : '#000',
-            padding: '0.6rem 1rem',
-            borderRadius: 22,
-            fontSize: 15,
-            lineHeight: 1.3,
-            maxWidth: '75%',
-            wordWrap: 'break-word'
-          }}>{msg.text}</div>
+            padding: '0.5rem 1rem',
+            borderRadius: 16,
+            fontSize: 14,
+            maxWidth: '75%'
+          }}>
+            {msg.text}
+          </div>
         ))}
         {isTyping && (
           <div style={{
             alignSelf: 'flex-start',
             backgroundColor: '#e5e5ea',
             padding: '0.5rem 1rem',
-            borderRadius: 22,
-            maxWidth: '75%',
+            borderRadius: 16,
+            maxWidth: '60%',
             display: 'flex',
             gap: 4
           }}>
-            <span style={{
-              width: 6,
-              height: 6,
-              backgroundColor: '#999',
-              borderRadius: '50%',
-              animation: 'pulse 1s infinite alternate'
-            }}></span>
-            <span style={{
-              width: 6,
-              height: 6,
-              backgroundColor: '#999',
-              borderRadius: '50%',
-              animation: 'pulse 1s infinite alternate 0.2s'
-            }}></span>
-            <span style={{
-              width: 6,
-              height: 6,
-              backgroundColor: '#999',
-              borderRadius: '50%',
-              animation: 'pulse 1s infinite alternate 0.4s'
-            }}></span>
+            <span style={dotStyle(0)} />
+            <span style={dotStyle(0.2)} />
+            <span style={dotStyle(0.4)} />
           </div>
         )}
+        <div ref={scrollRef} />
       </div>
 
-      {/* Input */}
       <div style={{
         padding: '0.75rem 1rem',
-        borderTop: '1px solid #ddd',
+        borderTop: '1px solid #eee',
         backgroundColor: '#fff',
         display: 'flex',
         gap: '0.5rem'
@@ -171,4 +133,16 @@ export default function ChatMockup() {
       </div>
     </div>
   );
+}
+
+// Dot animation styling
+function dotStyle(delay = 0) {
+  return {
+    width: 6,
+    height: 6,
+    backgroundColor: '#999',
+    borderRadius: '50%',
+    animation: `bounce 1.2s infinite ease-in-out`,
+    animationDelay: `${delay}s`
+  };
 }
