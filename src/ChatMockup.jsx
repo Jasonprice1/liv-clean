@@ -10,7 +10,19 @@ export default function ChatMockup() {
   const [isTyping, setIsTyping] = useState(false);
   const scrollRef = useRef(null);
 
-  // Scroll to bottom when messages update
+  const responsePool = [
+    "what u mean by that?",
+    "don’t play dumb rn 😭",
+    "no like fr, tell me what’s goin on",
+    "👀 interesting...",
+    "u always say that lol",
+    "is that how u rlly feel?",
+    "that’s lowkey cute ngl",
+    "lmaoo stoppp 😂",
+    "wyd rn?",
+    "u b thinking too much"
+  ];
+
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
@@ -19,7 +31,7 @@ export default function ChatMockup() {
     const trimmed = input.trim();
     if (!trimmed) return;
 
-    const nextResponse = "no like fr, tell me what’s goin on";
+    const nextResponse = responsePool[Math.floor(Math.random() * responsePool.length)];
 
     setMessages(prev => [...prev, { sender: 'user', text: trimmed }]);
     setInput('');
@@ -28,7 +40,7 @@ export default function ChatMockup() {
     setTimeout(() => {
       setMessages(prev => [...prev, { sender: 'ai', text: nextResponse }]);
       setIsTyping(false);
-    }, 11000); // ⏱️ 11 seconds
+    }, 11000);
   };
 
   return (
@@ -55,7 +67,9 @@ export default function ChatMockup() {
         <img src="https://i.pravatar.cc/100?img=47" alt="Liv" style={{ width: 36, height: 36, borderRadius: '50%' }} />
         <div>
           <div style={{ fontWeight: 'bold', fontSize: '1rem' }}>Liv</div>
-          <div style={{ fontSize: '0.75rem', color: '#888' }}>Typing...</div>
+          <div style={{ fontSize: '0.75rem', color: '#888' }}>
+            {isTyping ? "Typing..." : "Online"}
+          </div>
         </div>
       </div>
 
@@ -135,7 +149,7 @@ export default function ChatMockup() {
   );
 }
 
-// Dot animation styling
+// Animated typing dot style
 function dotStyle(delay = 0) {
   return {
     width: 6,
